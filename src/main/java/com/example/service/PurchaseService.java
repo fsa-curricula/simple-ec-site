@@ -35,14 +35,14 @@ public class PurchaseService {
 
     // 購入処理
     @Transactional
-    public void processPurchase(User user, Long productId, int quantity) throws Exception {
+    public void processPurchase(User user, Long productId) throws Exception {
         Product product = productRepository.findById(productId)
                             .orElseThrow(() -> new Exception("商品が存在しません。"));
 
         // 注文を作成
         Order order = new Order();
         order.setUser(user);
-        order.setTotalPrice(product.getPrice() * quantity);
+        order.setTotalPrice(product.getPrice());
         orderRepository.save(order);
 
         // 注文詳細を作成
