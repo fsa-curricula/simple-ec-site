@@ -24,7 +24,7 @@ public class PurchaseController {
                                    Model model) {
         User user = purchaseService.getUserByEmail(userDetails.getUsername());
         try {
-            purchaseService.processPurchase(user, productId, 1);
+            purchaseService.processPurchase(user, productId);
             return "purchase/complete";
         } catch (Exception e) {
             model.addAttribute("error", "購入処理中にエラーが発生しました: " + e.getMessage());
