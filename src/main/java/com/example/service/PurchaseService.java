@@ -35,21 +35,32 @@ public class PurchaseService {
 
     // 購入処理
     @Transactional
-    public void processPurchase(User user, Long productId) throws Exception {
-        Product product = productRepository.findById(productId)
-                            .orElseThrow(() -> new Exception("商品が存在しません。"));
+    public void processPurchase(User user, List<Long> productIdsList) throws Exception {
 
+        Integer totalPrice = 0;
+        
         // 注文を作成
         Order order = new Order();
         order.setUser(user);
-        order.setTotalPrice(product.getPrice());
+        order.setTotalPrice(totalPrice);
         orderRepository.save(order);
 
-        // 注文詳細を作成
-        OrderDetail orderDetail = new OrderDetail();
-        orderDetail.setOrder(order);
-        orderDetail.setProduct(product);
-        orderDetail.setPrice(product.getPrice());
-        orderDetailRepository.save(orderDetail);
+        for (Long productId : productIdsList) {
+            Product product = productRepository.findById(productId)
+                    .orElseThrow(() -> new Exception("商品が存在しません。"));
+
+            totalPrice += product.getPrice();
+
+            // 注文詳細を作成
+            OrderDetail orderDetail = new OrderDetail();
+            orderDetail.setOrder(order);
+            orderDetail.setProduct(product);
+            orderDetail.setPrice(product.getPrice());
+            orderDetailRepository.save(orderDetail);
+        }
+        
+        // 注文を更新
+        order.setTotalPrice(totalPrice);
+        orderRepository.save(order);
     }
 }
