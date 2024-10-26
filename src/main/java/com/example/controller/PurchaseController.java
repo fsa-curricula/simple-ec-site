@@ -23,8 +23,11 @@ public class PurchaseController {
                                    @AuthenticationPrincipal CustomUserDetails userDetails, 
                                    Model model) {
         User user = purchaseService.getUserByEmail(userDetails.getUsername());
+        List<Long> productIdsList = new ArrayList<Long>();
+        productIdsList.add(productId);
+        
         try {
-            purchaseService.processPurchase(user, productId);
+            purchaseService.processPurchase(user, productIdsList);
             return "purchase/complete";
         } catch (Exception e) {
             model.addAttribute("error", "購入処理中にエラーが発生しました: " + e.getMessage());
