@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>お気に入り一覧</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <h1>お気に入り一覧</h1>
+    
+    <div th:if="${favorites.isEmpty()}">
+        <p>お気に入りに登録された商品はありません。</p>
+    </div>
+    
+    <div th:unless="${favorites.isEmpty()}">
+        <table>
+            <thead>
+                <tr>
+                    <th>商品名</th>
+                    <th>画像</th>
+                    <th>価格</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="favorite : ${favorites}">
+                    <td>
+                        <a th:href="@{/products/{id}(id=${favorite.product.id})}" th:text="${favorite.product.name}">商品名</a>
+                    </td>
+                    <td>
+                        <img th:src="${favorite.product.imageUrl}" alt="商品画像" width="100"/>
+                    </td>
+                    <td th:text="${favorite.product.price}">1000</td>
+                    <td>
+                        <form th:action="@{/favorites/remove/{id}(id=${favorite.id})}" method="post">
+                            <button type="submit" class="btn btn-danger">お気に入りから削除</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <p><a th:href="@{/}">トップページへ戻る</a></p>
+</body>
+</html>
